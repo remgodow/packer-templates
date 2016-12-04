@@ -1,0 +1,62 @@
+{
+    "builders": [{
+    "type": "virtualbox-iso",
+    "vboxmanage": [
+      [ "modifyvm", "{{.Name}}", "--natpf1", "winrm,tcp,,55985,,5985" ],
+      [ "modifyvm", "{{.Name}}", "--memory", "2048" ],
+      [ "modifyvm", "{{.Name}}", "--vram", "36" ],
+      [ "modifyvm", "{{.Name}}", "--cpus", "2" ]
+    ],
+	"vboxmanage_post": [
+	  [ "storageattach", "{{.Name}}", "--storagectl", "IDE Controller", "--port", "0", "--device", "1", "--medium", "emptydrive" ]
+	],
+    "guest_os_type": "Windows10_64",
+	"format": "ova",
+	"guest_additions_mode": "attach",
+	"hard_drive_interface": "sata",
+	"disk_size": 1024000,
+	"vm_name": "win10_clean",
+    "iso_url": "{{ user `iso_url` }}",
+    "iso_checksum": "{{ user `iso_checksum` }}",
+    "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+    "communicator": "winrm",
+    "headless": "{{ user `headless` }}",    
+    "winrm_username": "vagrant",
+    "winrm_password": "vagrant",
+    "winrm_timeout": "24h",
+    "shutdown_command": "C:/windows/system32/sysprep/sysprep.exe /generalize /oobe /unattend:C:/Windows/Panther/Unattend/unattend.xml /quiet /shutdown",
+    "shutdown_timeout": "15m",
+    "floppy_files": [
+      "answer_files/win10/Autounattend.xml",
+      "answer_files/win10/postunattend.xml",
+      "scripts/boxstarter.ps1",
+      "scripts/package.ps1",
+      "scripts/Test-Command.ps1"
+    ]
+  }],
+    "provisioners": [
+    {
+      "type": "powershell",
+      "script": "scripts/provision.ps1",
+	  "pause_before": "1m"
+    }
+  ],
+    "post-processors": [
+    {
+      "type": "vagrant",
+      "keep_input_artifact": true,
+      "output": "windows10-clean-{{.Provider}}.box",
+      "vagrantfile_template": "vagrantfile-windows.template"
+    },
+	{
+	  "type": "compress",
+	  "output": "windows10-clean-{{.Provider}}.zip"
+	}
+  ],
+  "variables": {
+    "headless": "false",
+    "iso_checksum": "50d589bbbf420d9fb29b130458173daf",
+	"iso_checksum_type": "md5",
+    "iso_url": "iso/GSP12016X64_PL_DVD.iso"
+  }
+}

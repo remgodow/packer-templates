@@ -33,6 +33,7 @@
                 <Organization>Vagrant Inc.</Organization>
                 <ProductKey>
                     <!--<Key>your key here</Key>-->
+					<Key>33PXH-7Y6KF-2VJC9-XBBR8-HVTHH</Key>
                     <WillShowUI>Never</WillShowUI>
                 </ProductKey>
             </UserData>
@@ -47,21 +48,34 @@
                     <InstallFrom>
                         <MetaData wcm:action="add">
                             <Key>/IMAGE/NAME</Key>
-                            <Value>Windows 7 ULTIMATE</Value>
+							<!--
+                            <Value>Windows 7 PROFESSIONAL</Value>
+							-->
+							<Value>Professional x64</Value>
                         </MetaData>
                     </InstallFrom>
                 </OSImage>
             </ImageInstall>
         </component>
         <component xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
-            <SetupUILanguage>
+            <!--
+			<SetupUILanguage>
                 <UILanguage>en-US</UILanguage>
             </SetupUILanguage>
-            <InputLocale>en-US</InputLocale>
+            <InputLocale>pl-PL</InputLocale>
             <SystemLocale>en-US</SystemLocale>
             <UILanguage>en-US</UILanguage>
             <UILanguageFallback>en-US</UILanguageFallback>
             <UserLocale>en-US</UserLocale>
+			-->
+			<SetupUILanguage>
+                <UILanguage>pl-PL</UILanguage>
+            </SetupUILanguage>
+            <InputLocale>pl-PL</InputLocale>
+            <SystemLocale>pl-PL</SystemLocale>
+            <UILanguage>pl-PL</UILanguage>
+            <UILanguageFallback>en-US</UILanguageFallback>
+            <UserLocale>pl-PL</UserLocale>
         </component>
     </settings>
     <settings pass="offlineServicing">
@@ -119,7 +133,7 @@
             </OEMInformation>
             <!-- Rename computer here. -->
             <ComputerName>vagrant-7</ComputerName>
-            <TimeZone>Pacific Standard Time</TimeZone>
+            <TimeZone>Central European Standard Time</TimeZone>
             <RegisteredOwner/>
         </component>
         <component xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Microsoft-Windows-Security-SPP-UX" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">

@@ -15,8 +15,12 @@ if (Test-Command -cmdname 'Uninstall-WindowsFeature') {
     Uninstall-WindowsFeature -Remove
 }
 
+Set-ExplorerOptions -showHidenFilesFoldersDrives -showProtectedOSFiles -showFileExtensions
+Disable-InternetExplorerESC
+Disable-UAC
+if (Test-PendingReboot) { Invoke-Reboot }
 
-Install-WindowsUpdate -AcceptEula
+Write-BoxstarterMessage "Install-WindowsUpdate -AcceptEula"
 
 Write-BoxstarterMessage "Removing page file"
 $pageFileMemoryKey = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management"
@@ -26,6 +30,9 @@ if(Test-PendingReboot){ Invoke-Reboot }
 
 Write-BoxstarterMessage "Setting up winrm"
 netsh advfirewall firewall add rule name="WinRM-HTTP" dir=in localport=5985 protocol=TCP action=allow
+
+cinst powershell --version 4.0.20141001 --ignore-checksums
+if(Test-PendingReboot){ Invoke-Reboot }
 
 $enableArgs=@{Force=$true}
 try {

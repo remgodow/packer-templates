@@ -5,7 +5,7 @@ Write-Host "Enabling file sharing firewall rules"
 netsh advfirewall firewall set rule group="File and Printer Sharing" new enable=yes
 
 if(Test-Path "C:\Users\vagrant\VBoxGuestAdditions.iso") {
-    Write-Host "Installing Guest Additions"
+    Write-Host "Installing Guest Additions from ISO"
     certutil -addstore -f "TrustedPublisher" A:\oracle.cer
     cinst 7zip.commandline -y
     Move-Item C:\Users\vagrant\VBoxGuestAdditions.iso C:\Windows\Temp
@@ -16,6 +16,18 @@ if(Test-Path "C:\Users\vagrant\VBoxGuestAdditions.iso") {
     Remove-Item C:\Windows\Temp\virtualbox -Recurse -Force
     Remove-Item C:\Windows\Temp\VBoxGuestAdditions.iso -Force
 }
+else {
+	if(Test-Path "E:\VBoxWindowsAdditions.exe") {
+		Write-Host "Installing Guest Additions from DVD"
+		certutil -addstore -f "TrustedPublisher" A:\oracle.cer
+		Start-Process -FilePath "E:\VBoxWindowsAdditions.exe" -ArgumentList "/S" -WorkingDirectory "E:\" -Wait
+		Write-Host "Guest Additions installed."
+	}
+}
+
+Write-Host "Installing basic apps"
+cinst 7zip.install -y
+cinst notepadplusplus -y
 
 Write-Host "Cleaning SxS..."
 Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
@@ -45,33 +57,8 @@ if (Test-Command -cmdname 'Optimize-Volume') {
     Defrag.exe c: /H
 }
 
-Write-Host "0ing out empty space..."
-$FilePath="c:\zero.tmp"
-$Volume = Get-WmiObject win32_logicaldisk -filter "DeviceID='C:'"
-$ArraySize= 64kb
-$SpaceToLeave= $Volume.Size * 0.05
-$FileSize= $Volume.FreeSpace - $SpacetoLeave
-$ZeroArray= new-object byte[]($ArraySize)
- 
-$Stream= [io.File]::OpenWrite($FilePath)
-try {
-   $CurFileSize = 0
-    while($CurFileSize -lt $FileSize) {
-        $Stream.Write($ZeroArray,0, $ZeroArray.Length)
-        $CurFileSize +=$ZeroArray.Length
-    }
-}
-finally {
-    if($Stream) {
-        $Stream.Close()
-    }
-}
- 
-Del $FilePath
-
-Write-Host "copying auto unattend file"
-mkdir C:\Windows\setup\scripts
-copy-item a:\SetupComplete-2012.cmd C:\Windows\setup\scripts\SetupComplete.cmd -Force
+cinst sdelete -y
+sdelete -q -z C:
 
 mkdir C:\Windows\Panther\Unattend
 copy-item a:\postunattend.xml C:\Windows\Panther\Unattend\unattend.xml
